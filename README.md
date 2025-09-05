@@ -115,8 +115,9 @@ Then assign the Managed Identity:
 If you rely on scopes + delegated flow for local dev, keep a delegated scope (e.g. `user_impersonation`) but for Managed Identity in ACA you typically use application role + `/.default`.
 
 ### 9. Create Container Apps Environment
+Enable a system-assigned managed identity on the environment (used later for ACR pull permission in step 10):
 ```pwsh
-az containerapp env create -g $RG -n $ENV -l $LOC
+az containerapp env create -g $RG -n $ENV -l $LOC --identity system-assigned
 ```
 
 ### 10. Grant ACR Pull Permission to the Environment�s Managed Identity
