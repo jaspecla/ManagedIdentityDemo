@@ -1,0 +1,60 @@
+To create a proper .gitignore file for an ASP.NET Core project, you can use the following template. This ensures that unnecessary files (e.g., build artifacts, user-specific settings, and temporary files) are excluded from version control:
+# Build results
+bin/
+obj/
+
+# User-specific files
+*.user
+*.userosscache
+*.suo
+*.userprefs
+
+# Logs
+*.log
+logs/
+
+# Visual Studio specific
+.vscode/
+.vs/
+*.ncrunchsolution
+*.ncrunchproject
+*.sln.docstates
+
+# Dependency directories
+node_modules/
+bower_components/
+
+# Generated files
+*.dll
+*.exe
+*.pdb
+*.cache
+*.ilk
+*.idb
+*.lib
+*.log
+*.obj
+*.o
+*.os
+*.so
+*.swp
+*.tmp
+*.tmp.*
+*.csproj.user
+*.dbmdl
+*.jfm
+*.pfx
+*.publishsettings
+
+# ASP.NET Core specific
+appsettings*.json
+appsettings*.Development.json
+appsettings*.Production.json
+
+# Rider IDE specific
+.idea/
+*.sln.iml
+
+# Other
+*.DS_Store
+Thumbs.db

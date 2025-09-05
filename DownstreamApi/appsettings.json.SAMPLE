@@ -1,0 +1,14 @@
+{
+  "Logging": {
+    "LogLevel": {
+      "Default": "Information",
+      "Microsoft.AspNetCore": "Warning"
+    }
+  },
+  "AllowedHosts": "*",
+  "AzureAd": {
+    "Authority": "https://login.microsoftonline.com/<tenant-id>/v2.0",
+    "ClientId": "<downstream-api-app-registration-client-id>",
+    "Audience": "api://<downstream-app-id-uri-or-client-id>"
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "Logging": {
+    "LogLevel": {
+      "Default": "Information",
+      "Microsoft.AspNetCore": "Warning"
+    }
+  },
+  "AllowedHosts": "*",
+  "ManagedIdentity": {
+    "ClientId": "<user-assigned-managed-identity-client-id>"
+  },
+  "Downstream": {
+    "BaseUrl": "https://localhost:5002/",
+    "ResourceId": "api://<downstream-app-id-uri-or-client-id>",
+    "Scope": "api://<downstream-app-id-uri-or-client-id>/.default"
+  }
+}
