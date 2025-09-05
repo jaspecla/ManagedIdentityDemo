@@ -1,0 +1,18 @@
+**/[bB]in/
+**/[oO]bj/
+**/.vs/
+.vscode/
+*.user
+*.swp
+*.suo
+*.git
+*.gitignore
+Dockerfile*
+README.md
+LICENSE
+*.ps1
+*.cmd
+*.bat
+
+# Exclude local configuration secrets if added later
+*appsettings.*.local.json

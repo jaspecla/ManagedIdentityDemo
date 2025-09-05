@@ -65,31 +65,27 @@ az acr create -n $ACR -g $RG --sku Basic --admin-enabled false
 az acr login -n $ACR
 ```
 
-### 4. Add Dockerfiles (Example Multi-Stage)
-If not already present, you can create `DownstreamApi/Dockerfile` and `CallerApi/Dockerfile`:
-```Dockerfile
-# (Example) DownstreamApi/Dockerfile
-FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS base
-WORKDIR /app
-EXPOSE 8080
-ENV ASPNETCORE_URLS=http://+:8080
-FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
-WORKDIR /src
-COPY . .
-RUN dotnet publish DownstreamApi/DownstreamApi.csproj -c Release -o /out
-FROM base AS final
-WORKDIR /app
-COPY --from=build /out .
-ENTRYPOINT ["dotnet","DownstreamApi.dll"]
-```
-(CallerApi Dockerfile is analogous, pointing to `CallerApi.csproj` and `CallerApi.dll`).
+### 4. Dockerfiles (Already Included)
+Production-ready multi-stage Dockerfiles are now present:
+
+- `DownstreamApi/Dockerfile`
+- `CallerApi/Dockerfile`
+
+Key characteristics:
+- Multi-stage (sdk -> runtime) with `dotnet publish -c Release /p:UseAppHost=false`.
+- Exposes single HTTP port 8080 (TLS terminated by Azure Container Apps ingress).
+- Sets `ASPNETCORE_URLS` & `ASPNETCORE_HTTP_PORTS` to `http://+:8080`.
+- Disables diagnostics (`DOTNET_EnableDiagnostics=0`) to reduce overhead in production.
+
+If you need HTTPS inside the container (typically not required for ACA), you can add a certificate and adjust the environment variables, but ACA provides TLS at the ingress so HTTP internally is standard.
 
 ### 5. Build & Push Images
+Use ACR Tasks (`az acr build`) from the repo root; specify each Dockerfile explicitly so caching works correctly:
 ```pwsh
-az acr build -t $ACR.azurecr.io/downstreamapi:latest -r $ACR .
-az acr build -t $ACR.azurecr.io/callerapi:latest -r $ACR .
+az acr build -t $ACR.azurecr.io/downstreamapi:latest -f DownstreamApi/Dockerfile -r $ACR .
+az acr build -t $ACR.azurecr.io/callerapi:latest -f CallerApi/Dockerfile -r $ACR .
 ```
-> Using `az acr build` avoids needing local Docker.
+> Using `az acr build` avoids requiring a local Docker engine and leverages ACR cache layers.
 
 ### 6. Create Managed Identity (User Assigned)
 ```pwsh
@@ -123,7 +119,7 @@ If you rely on scopes + delegated flow for local dev, keep a delegated scope (e.
 az containerapp env create -g $RG -n $ENV -l $LOC
 ```
 
-### 10. Grant ACR Pull Permission to the Environment’s Managed Identity
+### 10. Grant ACR Pull Permission to the Environmentï¿½s Managed Identity
 Retrieve the environment managed identity principal id:
 ```pwsh
 $ENV_MI=az containerapp env show -g $RG -n $ENV --query identity.principalId -o tsv
